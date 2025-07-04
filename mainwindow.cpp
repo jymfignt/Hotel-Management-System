@@ -12,7 +12,7 @@ using namespace std;
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow)
 {
-    ui->setupUi(this);
+    ui->setupUi(this);  // Set UI elements
 }
 
 MainWindow::~MainWindow()
@@ -24,12 +24,15 @@ void MainWindow::on_btnAddHotel_clicked() {
     bool ok1, ok2, ok3, ok4;
 
     QString name = QInputDialog::getText(this, "Add Hotel", "Hotel name:", QLineEdit::Normal, "", &ok1);
+    // Pop up a dialog box to get the hotel name
     if (!ok1 || name.isEmpty()) return;
 
     int price = QInputDialog::getInt(this, "Add Hotel", "Price ($):", 100, 1, 10000, 1, &ok2);
+    // Get the price, range 0-100000
     if (!ok2) return;
 
     double rating = QInputDialog::getDouble(this, "Add Hotel", "Rating (0.0-5.0):", 4.0, 0.0, 5.0, 1, &ok3);
+    // Get the rating, range 0.0-5.0, keep one decimal place
     if (!ok3) return;
 
     double distance = QInputDialog::getDouble(this, "Add Hotel", "Distance from city center (km):", 5.0, 0.1, 1000.0, 1, &ok4);
@@ -83,43 +86,6 @@ void MainWindow::on_btnViewHotels_clicked() {
 }
 
 
-/*void MainWindow::on_btnViewHotels_clicked() {
-    vector<Hotel> hotels = hotelManager.getHotels();
-    if (hotels.empty()) {
-        QMessageBox::information(this, "Notice", "No hotel information available.");
-        return;
-    }
-
-    QString info = "<html><body>";
-    info += "<table border='0' cellspacing='10'>";
-
-    for (int row = 0; row < 2; ++row) {
-        info += "<tr>";
-        for (int col = 0; col < 5; ++col) {
-            int index = row * 5 + col;
-            if (index < hotels.size()) {
-                const Hotel& h = hotels[index];
-                info += "<td valign='top' style='padding:5px; border:1px solid #ccc;'>"
-                        "<b> " + QString::fromStdString(h.getName()) + "</b><br>"
-                                                                "💲Price: $" + QString::number(h.getPrice()) + "<br>"
-                                                          "⭐Rating: " + QString::number(h.getRating()) + "<br>"
-                                                           "📍Distance: " + QString::number(h.getDistance()) + " km"
-                                                             "</td>";
-            }
-        }
-        info += "</tr>";
-    }
-
-    info += "</table></body></html>";
-
-    QMessageBox msgBox;
-    msgBox.setWindowTitle("Hotel List");
-    msgBox.setTextFormat(Qt::RichText);  // 启用 HTML 格式
-    msgBox.setText(info);
-    msgBox.exec();
-}*/
-
-
 void MainWindow::on_btnSortByPrice_clicked() {
     vector<Hotel> hotels = hotelManager.getHotels();
     if (hotels.empty()) {
@@ -127,7 +93,7 @@ void MainWindow::on_btnSortByPrice_clicked() {
         return;
     }
 
-    // 冒泡排序
+    // bubble sort
     for (size_t i = 0; i < hotels.size() - 1; i++) {
         for (size_t j = 0; j < hotels.size() - i - 1; j++) {
             if (hotels[j].getPrice() > hotels[j + 1].getPrice()) {
@@ -231,6 +197,7 @@ void MainWindow::on_btnKnapsack_clicked() {
 
     int n = hotels.size();
     vector<vector<float>> dp(n + 1, vector<float>(budget + 1, 0));
+    // Dynamic programming -- dp[i][j] represents the maximum score that the first i hotels can get within budget j
 
     for (int i = 1; i <= n; i++) {
         for (int w = 1; w <= budget; w++) {
