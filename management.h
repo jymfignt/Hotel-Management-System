@@ -9,9 +9,9 @@
 #include <algorithm>
 #include <climits>
 #include <map>
-#include <QString>
-#include <QDebug>
-#include <QCoreApplication>
+#include <QString>           // Provides the QString class for handling Unicode text
+#include <QDebug>            // Used for debugging output (e.g., qDebug())
+#include <QCoreApplication>  // Defines the core application class for non-GUI applications
 using namespace std;
 
 class Hotel{
@@ -66,7 +66,7 @@ public:
         string from = rawFrom;
         string to = rawTo;
 
-        // 去除首尾空格 + 全部转小写
+       // Remove leading and trailing spaces, convert all to lowercase
         transform(from.begin(), from.end(), from.begin(), ::tolower);
         transform(to.begin(), to.end(), to.begin(), ::tolower);
 
@@ -98,7 +98,6 @@ public:
         }
 
         while (!nodes.empty()) {
-            // 选出当前未访问中距离最小的节点
             auto it = min_element(nodes.begin(), nodes.end(), [&](const string& a, const string& b) {
                 return dist[a] < dist[b];
             });
@@ -120,7 +119,6 @@ public:
             return QString("Unable to reach %2 from %1").arg(QString::fromStdString(start), QString::fromStdString(end));
         }
 
-        // 回溯路径
         vector<string> path;
         for (string at = end; !at.empty(); at = prev.count(at) ? prev[at] : "") {
             path.push_back(at);
@@ -179,8 +177,10 @@ public:
             output += QString::fromStdString(nodes[i]) + ":\t";
             for (int j = 0; j < n; ++j) {
                 output += (dist[i][j] >= 1e9f ? "INF" : QString::number(dist[i][j])) + "\t";
+                 // If the distance is very large, treat it as infinity; otherwise, convert number to QString
             }
             output += "\n";
+            // Move to the next line for the next node
         }
 
         return output;
@@ -196,8 +196,6 @@ public:
 
     void readFromFile()
     {
-
-
             QString path = QCoreApplication::applicationDirPath();
             qDebug() << "Current execution path:" << path;
 
@@ -296,19 +294,8 @@ public:
         cout << "Hotel added successfully with ID: H" << newHotel.getId() << endl;
     }
 
-    /*void viewAllHotels() {
-        if (hotels.empty()) {
-            cout << "No hotels available." << endl;
-            return;
-        }
-
-        cout << "\n=== All Hotels ===" << endl;
-        for (const auto& hotel : hotels) {
-            hotel.printDetail();
-        }
-    }*/
     void viewAllHotels() {
-        // 强制刷新，从文件中读取最新数据（防止程序运行中途文件被改动后看不到）
+        // Force refresh to read the latest data from the file (to prevent the file from being modified while the program is running and cannot be seen)
         readFromFile();
 
         if (hotels.empty()) {
